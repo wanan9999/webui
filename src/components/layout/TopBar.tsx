@@ -30,6 +30,7 @@ import { buildEndSessionUrl, getPostLogoutRedirectUri } from '@/services/auth/oa
 import { useEffect, useState } from 'react';
 import { useAccountStore } from '@/stores/accountStore';
 import { useSchemaStore } from '@/stores/schemaStore';
+import { translateLayoutName } from '@/lib/schemaLocalization';
 
 const IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
 
@@ -152,7 +153,7 @@ export function TopBar() {
                         }}
                       >
                         <Icon className="mr-2 h-4 w-4" />
-                        {layout.name}
+                        {translateLayoutName(layout.name)}
                       </DropdownMenuItem>
                     );
                   })}

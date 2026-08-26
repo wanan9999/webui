@@ -19,6 +19,7 @@ import { useSchemaStore } from '@/stores/schemaStore';
 import { visibleLayouts, isLinkEnterprise, isLinkVisible } from '@/lib/layout';
 import { sectionLandingLink } from '@/lib/lastVisited';
 import type { Layout, LayoutItem, LayoutSubItem } from '@/types/schema';
+import { translateLayoutName, translateViewName } from '@/lib/schemaLocalization';
 
 function LucideIcon({ name, className }: { name: string; className?: string }) {
   const formatted = name
@@ -161,7 +162,7 @@ function SidebarSubItem({
           }
         }}
       >
-        <span className="truncate">{item.name || 'Overview'}</span>
+        <span className="truncate">{translateViewName(item.viewName, item.name || 'Overview')}</span>
         {isLocked && <Lock className="ml-auto h-3 w-3 text-muted-foreground" />}
       </Button>
     );
@@ -180,7 +181,7 @@ function SidebarSubItem({
             style={{ paddingLeft: `${(depth + 1) * 12 + 8}px` }}
           >
             <ChevronDown className="h-3 w-3 shrink-0 transition-transform duration-200 [[data-state=closed]>&]:rotate-[-90deg]" />
-            <span className="truncate">{item.name}</span>
+            <span className="truncate">{translateLayoutName(item.name)}</span>
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -251,7 +252,7 @@ function SidebarTopItem({
         }}
       >
         <LucideIcon name={icon} className="h-4 w-4 shrink-0" />
-        <span className="truncate">{name}</span>
+        <span className="truncate">{translateViewName(viewName, name)}</span>
         {isLocked && <Lock className="ml-auto h-3 w-3 text-muted-foreground" />}
       </Button>
     );
@@ -268,7 +269,7 @@ function SidebarTopItem({
         <CollapsibleTrigger asChild>
           <Button variant="ghost" className="w-full justify-start gap-2 font-normal">
             <LucideIcon name={icon} className="h-4 w-4 shrink-0" />
-            <span className="truncate">{name}</span>
+            <span className="truncate">{translateLayoutName(name)}</span>
             <ChevronDown className="ml-auto h-3 w-3 shrink-0 transition-transform duration-200 [[data-state=closed]>&]:rotate-[-90deg]" />
           </Button>
         </CollapsibleTrigger>
@@ -391,7 +392,7 @@ export function Sidebar() {
                         {Icon ? <Icon className="h-4 w-4" /> : <LucideIcons.Circle className="h-4 w-4" />}
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="top">{target.name}</TooltipContent>
+                    <TooltipContent side="top">{translateLayoutName(target.name)}</TooltipContent>
                   </Tooltip>
                 );
               })}

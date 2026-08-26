@@ -13,6 +13,7 @@ import { useAccountStore } from '@/stores/accountStore';
 import { useUIStore } from '@/stores/uiStore';
 import { fetchSession, fetchSchema, fetchAccountInfo } from '@/services/jmap/client';
 import { setLocale } from '@/i18n';
+import { localizeSchema } from '@/lib/schemaLocalization';
 import { TopBar } from '@/components/layout/TopBar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MainContent } from '@/components/layout/MainContent';
@@ -146,10 +147,9 @@ export default function AdminPanel() {
 
         if (cancelled) return;
 
-        setSchema(schemaData);
-
         setAccountInfo(accountData.permissions, accountData.edition, accountData.locale);
         setLocale(accountData.locale);
+        setSchema(localizeSchema(schemaData));
 
         setInitializing(false);
       } catch (err) {
