@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要构建并发布的 Git 标签，例如 v1.0.9'
+        description: '要创建并发布的 Git 标签，例如 v1.0.9'
         required: true
         type: string
 
@@ -13,14 +13,14 @@ permissions:
 
 jobs:
   build:
-    name: 构建前端并创建发布草稿
+    name: 构建并发布前端
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出指定标签的代码
+      - name: 检出 main 分支代码
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.tag }}
+          ref: main
 
       - name: 设置 Node.js 环境
         uses: actions/setup-node@v7
@@ -57,32 +57,4 @@ jobs:
           files: webui.zip
           body_path: release_body.md
           tag_name: ${{ inputs.tag }}
-          target_commitish: ${{ inputs.tag }}
-          # Release 会先创建为草稿，只有构建成功后才会正式发布，
-          # 避免错误构建对外可见。
-          draft: true
-
-  publish:
-    name: 发布 Release
-    needs: [build]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: 发布草稿 Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release edit "${{ inputs.tag }}" --draft=false --latest --repo "${{ github.repository }}"
-
-  cleanup:
-    name: 清理失败的发布
-    needs: [build]
-    if: failure()
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: 删除草稿 Release 和标签
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release delete "${{ inputs.tag }}" --yes --cleanup-tag --repo "${{ github.repository }}" || true
+          target_commitish: main
