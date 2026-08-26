@@ -16,6 +16,7 @@ import { resolveSchema, resolveVariantForm, resolveForm } from '@/lib/schemaReso
 import { useObjectList, useObjectLabel } from '@/lib/objectOptions';
 import { formatSize, formatDuration } from '@/lib/durationFormat';
 import type { Schema, Field, FieldType, FormField, Form, Fields, EnumVariant, ScalarType } from '@/types/schema';
+import { getIntlLocale } from '@/i18n';
 
 export interface DynamicViewProps {
   schema: Schema;
@@ -228,7 +229,7 @@ function NumberValue({ value, format }: { value: unknown; format: string }) {
     case 'duration':
       return <span>{formatDuration(num)}</span>;
     default:
-      return <span>{num.toLocaleString()}</span>;
+      return <span>{num.toLocaleString(getIntlLocale())}</span>;
   }
 }
 
@@ -237,7 +238,7 @@ function DateTimeValue({ value }: { value: unknown }) {
   const str = String(value);
   const d = new Date(str);
   const formatted = !isNaN(d.getTime())
-    ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(d)
+    ? new Intl.DateTimeFormat(getIntlLocale(), { dateStyle: 'medium', timeStyle: 'short' }).format(d)
     : str;
   return <span>{formatted}</span>;
 }

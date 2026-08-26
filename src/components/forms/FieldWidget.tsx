@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import { Calendar } from '@/components/ui/calendar';
+import i18n, { getIntlLocale } from '@/i18n';
 
 import { Plus, X, Eye, EyeOff, Loader2, Search, Check, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 
@@ -198,7 +199,7 @@ export function FieldWidget(props: FieldWidgetProps) {
       default: {
         const _: never = ft;
         void _;
-        return <p className="text-sm text-muted-foreground">Unsupported field type</p>;
+        return <p className="text-sm text-muted-foreground">{i18n.t('field.unsupportedType', 'Unsupported field type')}</p>;
       }
     }
   })();
@@ -313,6 +314,7 @@ function StringField({
   maxLength,
   nullable,
 }: StringFieldProps) {
+  const { t } = useTranslation();
   const strValue = (value as string) ?? '';
 
   const handleCommit = (v: string) => {
@@ -325,7 +327,7 @@ function StringField({
 
   if (readOnly && format !== 'secret' && format !== 'secretText' && format !== 'color') {
     if (!strValue) {
-      return <span className="text-sm text-muted-foreground italic">Not set</span>;
+      return <span className="text-sm text-muted-foreground italic">{t('field.notSet', 'Not set')}</span>;
     }
     if (format === 'text' || format === 'html') {
       return (
@@ -554,12 +556,13 @@ interface NumberFieldProps {
 }
 
 function NumberField({ format, value, onChange, readOnly, min, max, nullable }: NumberFieldProps) {
+  const { t } = useTranslation();
   if (readOnly && format !== 'size' && format !== 'duration') {
     const numValue = value as number | null | undefined;
     if (numValue == null) {
-      return <span className="text-sm text-muted-foreground italic">Not set</span>;
+      return <span className="text-sm text-muted-foreground italic">{t('field.notSet', 'Not set')}</span>;
     }
-    return <span className="text-sm">{numValue.toLocaleString()}</span>;
+    return <span className="text-sm">{numValue.toLocaleString(getIntlLocale())}</span>;
   }
 
   switch (format) {
@@ -833,10 +836,12 @@ interface DateTimeFieldProps {
   nullable?: boolean;
 }
 
-const DATE_TIME_FORMAT = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-
 function DateTimeField({ value, onChange, readOnly, nullable }: DateTimeFieldProps) {
-  const { t } = useTranslation();
+  const { t, i18n: translation } = useTranslation();
+  const dateTimeFormat = useMemo(
+    () => new Intl.DateTimeFormat(getIntlLocale(), { dateStyle: 'medium', timeStyle: 'short' }),
+    [translation.language],
+  );
   const strValue = typeof value === 'string' ? value : '';
 
   const selected = useMemo(() => {
@@ -857,7 +862,7 @@ function DateTimeField({ value, onChange, readOnly, nullable }: DateTimeFieldPro
     if (!strValue) {
       return <span className="text-sm text-muted-foreground italic">{t('field.notSet', 'Not set')}</span>;
     }
-    return <span className="text-sm">{selected ? DATE_TIME_FORMAT.format(selected) : strValue}</span>;
+    return <span className="text-sm">{selected ? dateTimeFormat.format(selected) : strValue}</span>;
   }
 
   return (
@@ -870,7 +875,7 @@ function DateTimeField({ value, onChange, readOnly, nullable }: DateTimeFieldPro
             className={cn('flex-1 justify-start text-left font-normal', !selected && 'text-muted-foreground')}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {selected ? DATE_TIME_FORMAT.format(selected) : t('field.pickDate', 'Pick a date')}
+            {selected ? dateTimeFormat.format(selected) : t('field.pickDate', 'Pick a date')}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">

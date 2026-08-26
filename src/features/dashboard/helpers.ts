@@ -7,6 +7,7 @@
 import type { Metric, MetricId, Period } from './types/metrics';
 import type { Card, Series, MetricFormat, Aggregate } from './types/schema';
 import { PRESET_MS, BUCKET_CONFIG, CUSTOM_BUCKET_COUNT, SPARKLINE_BUCKET_COUNT } from './types/metrics';
+import { getIntlLocale } from '@/i18n';
 
 export function metricToScalar(m: Metric): number {
   if (m['@type'] === 'Histogram') {
@@ -159,7 +160,7 @@ export function formatValue(value: number, format: MetricFormat): string {
       if (Number.isInteger(value) && Math.abs(value) < 1000) {
         return value.toString();
       }
-      return new Intl.NumberFormat(undefined, {
+      return new Intl.NumberFormat(getIntlLocale(), {
         notation: Math.abs(value) >= 1000 ? 'compact' : 'standard',
         maximumFractionDigits: 1,
       }).format(value);
@@ -199,16 +200,16 @@ export function formatTimeTick(date: Date, period: Period): string {
   if (period.kind === 'preset') {
     switch (period.preset) {
       case '24h':
-        return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString(getIntlLocale(), { hour: '2-digit', minute: '2-digit' });
       default:
-        return date.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' });
+        return date.toLocaleDateString(getIntlLocale(), { month: '2-digit', day: '2-digit' });
     }
   }
   const span = period.to.getTime() - period.from.getTime();
   if (span <= 86_400_000) {
-    return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString(getIntlLocale(), { hour: '2-digit', minute: '2-digit' });
   }
-  return date.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit' });
+  return date.toLocaleDateString(getIntlLocale(), { month: '2-digit', day: '2-digit' });
 }
 
 export function collectHistoryMetricIds(

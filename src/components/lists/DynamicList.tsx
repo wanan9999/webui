@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { getIntlLocale } from '@/i18n';
 import {
   ChevronDown,
   ChevronUp,
@@ -165,7 +166,7 @@ function formatDuration(ms: unknown): string {
 
 function formatNumber(value: unknown): string {
   if (value == null || typeof value !== 'number') return '';
-  return value.toLocaleString();
+  return value.toLocaleString(getIntlLocale());
 }
 
 function getFieldsRecord(resolvedSchema: ResolvedSchema): Record<string, Field> {
@@ -234,7 +235,7 @@ function renderCellValue(
     case 'utcDateTime': {
       if (typeof value === 'string' || typeof value === 'number') {
         try {
-          return new Date(value).toLocaleString();
+          return new Date(value).toLocaleString(getIntlLocale());
         } catch {
           return String(value);
         }
@@ -823,7 +824,7 @@ export function DynamicList({ viewName }: DynamicListProps) {
   }
 
   if (!resolved.list) {
-    return <div className="p-8 text-center text-muted-foreground">No list configured</div>;
+    return <div className="p-8 text-center text-muted-foreground">{t('errors.noListConfigured', 'No list configured')}</div>;
   }
 
   const { obj, schema: resolvedSchema, list } = resolved;

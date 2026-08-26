@@ -6,6 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getIntlLocale } from '@/i18n';
 import { Link } from 'react-router-dom';
 import { CircleDot, CircleX, Clock } from 'lucide-react';
 import { useSchemaStore } from '@/stores/schemaStore';
@@ -99,7 +100,7 @@ export function TraceTimeline({ events, anchorTimestamp }: TraceTimelineProps) {
 
   function formatAbsoluteTime(ts: string): string {
     const d = new Date(ts);
-    return d.toLocaleTimeString(undefined, {
+    return d.toLocaleTimeString(getIntlLocale(), {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -245,7 +246,7 @@ function TraceValueDisplay({
       }
 
       const displayNum = typeof numericInput === 'number' ? numericInput : Number(numericInput);
-      return <>{displayNum.toLocaleString()}</>;
+      return <>{displayNum.toLocaleString(getIntlLocale())}</>;
     }
     case 'Boolean': {
       if (keyName === 'tls') {
@@ -258,7 +259,7 @@ function TraceValueDisplay({
     case 'UTCDateTime':
       return (
         <>
-          {new Intl.DateTimeFormat(undefined, {
+          {new Intl.DateTimeFormat(getIntlLocale(), {
             dateStyle: 'medium',
             timeStyle: 'medium',
           }).format(new Date(value.value))}

@@ -14,6 +14,7 @@ import { DynamicForm } from '@/components/forms/DynamicForm';
 import { DynamicViewPage } from '@/components/views/DynamicViewPage';
 import { LoadingFallback } from '@/components/common/LoadingFallback';
 import type { Schema } from '@/types/schema';
+import i18n from '@/i18n';
 
 function lazyFeature<M, P>(load: () => Promise<M>, select: (module: M) => ComponentType<P>) {
   return lazy(() => load().then((module) => ({ default: select(module) })));
@@ -81,18 +82,18 @@ function renderView(schema: Schema | null, viewName?: string, id?: string, secti
     }
     return (
       <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-        Unknown component: {componentName}
+        {i18n.t('errors.unknownComponent', 'Unknown component: {{name}}', { name: componentName })}
       </div>
     );
   }
 
   if (!schema) {
-    return <div className="flex items-center justify-center p-8 text-muted-foreground">Loading...</div>;
+    return <div className="flex items-center justify-center p-8 text-muted-foreground">{i18n.t('common.loading', 'Loading...')}</div>;
   }
 
   const resolved = resolveObject(schema, viewName);
   if (!resolved) {
-    return <div className="flex items-center justify-center p-8 text-destructive">Unknown view: {viewName}</div>;
+    return <div className="flex items-center justify-center p-8 text-destructive">{i18n.t('errors.unknownView', 'Unknown view: {{name}}', { name: viewName })}</div>;
   }
 
   if (resolved.objectName === 'x:Action') {

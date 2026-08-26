@@ -17,6 +17,7 @@ import type { TraceEvent, TraceKeyValue, TraceValue } from '../types';
 import { TraceTimeline } from './TraceTimeline';
 
 import { jmapMapToArray } from '@/lib/jmapUtils';
+import { getIntlLocale } from '@/i18n';
 
 function normalizeTraceEvents(raw: unknown): TraceEvent[] {
   const events = jmapMapToArray<Record<string, unknown>>(raw);
@@ -130,7 +131,7 @@ export function TraceDetailView({ viewName, objectId }: TraceDetailViewProps) {
     : '-';
 
   const dateStr = firstEvent
-    ? new Intl.DateTimeFormat(undefined, {
+    ? new Intl.DateTimeFormat(getIntlLocale(), {
         dateStyle: 'medium',
         timeStyle: 'medium',
       }).format(new Date(firstEvent.timestamp))

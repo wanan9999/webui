@@ -9,6 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import i18n from '@/i18n';
 
 const ToastViewport = React.forwardRef<HTMLOListElement, React.HTMLAttributes<HTMLOListElement>>(
   ({ className, ...props }, ref) => (
@@ -64,7 +65,7 @@ const ToastClose = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttribute
   ({ className, ...props }, ref) => (
     <button
       ref={ref}
-      aria-label="Close"
+      aria-label={i18n.t('common.close', 'Close')}
       className={cn(
         'absolute right-1 top-1 rounded-md p-1 text-foreground/60 transition-colors hover:text-foreground focus:outline-none focus:ring-1 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
         className,

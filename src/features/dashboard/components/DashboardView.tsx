@@ -17,6 +17,7 @@ import { collectHistoryMetricIds, collectLiveMetricIds, periodKey, periodWindow,
 import { StatCard } from './StatCard';
 import { DashboardChart } from './DashboardChart';
 import { PeriodSelector } from './PeriodSelector';
+import { useTranslation } from 'react-i18next';
 
 interface DashboardViewProps {
   dashboardId: string;
@@ -24,6 +25,7 @@ interface DashboardViewProps {
 }
 
 export function DashboardView({ dashboardId, section }: DashboardViewProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const schema = useSchemaStore((s) => s.schema);
   const period = useDashboardStore((s) => s.period);
@@ -94,7 +96,9 @@ export function DashboardView({ dashboardId, section }: DashboardViewProps) {
   if (!dashboard) {
     if (dashboards.length === 0) {
       return (
-        <div className="flex items-center justify-center p-8 text-muted-foreground">No dashboards configured.</div>
+        <div className="flex items-center justify-center p-8 text-muted-foreground">
+          {t('errors.noDashboardsConfigured', 'No dashboards configured.')}
+        </div>
       );
     }
     return null;
